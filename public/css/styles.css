@@ -59,6 +59,20 @@ body {
   min-height: 320px;
 }
 
+.stream-status {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.stream-status.hidden {
+  display: none;
+}
+
 .snapshot-panel {
   display: flex;
   gap: 1rem;

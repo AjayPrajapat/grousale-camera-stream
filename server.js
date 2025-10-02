@@ -37,7 +37,8 @@ const server = config.server.httpsEnabled
   : http.createServer(app);
 
 expressWs(app, server);
-const { proxy, scriptUrl } = require('rtsp-relay')(app);
+const { proxy } = require('rtsp-relay')(app);
+const playerScriptPath = require.resolve('rtsp-relay/browser');
 
 function isAuthenticated(req) {
   return Boolean(req.session && req.session.user);
@@ -65,7 +66,7 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.get('/player.js', (req, res) => {
   res.type('application/javascript');
-  res.sendFile(scriptUrl);
+  res.sendFile(playerScriptPath);
 });
 
 app.get('/login', (req, res) => {

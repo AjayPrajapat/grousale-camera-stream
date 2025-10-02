@@ -1,4 +1,5 @@
 const canvas = document.getElementById('cameraCanvas');
+const statusBanner = document.getElementById('streamStatus');
 const snapshotButton = document.getElementById('snapshotButton');
 const downloadLink = document.getElementById('downloadLink');
 const controlButtons = document.querySelectorAll('.control');
@@ -7,10 +8,53 @@ const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
 const streamUrl = `${wsProtocol}://${window.location.host}/api/stream`;
 
 if (window.loadPlayer && canvas) {
+  let statusTimeout;
+  let activePlayer;
+  if (statusBanner) {
+    statusBanner.classList.remove('hidden');
+    statusBanner.textContent = 'Connecting to camera…';
+    statusTimeout = setTimeout(() => {
+      if (!canvas.dataset.streamReady) {
+        statusBanner.textContent = 'Unable to reach the camera stream. Check RTSP settings and network.';
+      }
+    }, 8000);
+  }
+
   loadPlayer({
     url: streamUrl,
     canvas,
-  });
+    onDisconnect: () => {
+      canvas.dataset.streamReady = '';
+      if (statusBanner) {
+        statusBanner.classList.remove('hidden');
+        statusBanner.textContent = 'Lost connection to camera stream. Retrying…';
+      }
+    },
+  })
+    .then((player) => {
+      activePlayer = player;
+      canvas.dataset.streamReady = 'true';
+      if (statusBanner) {
+        statusBanner.classList.add('hidden');
+        statusBanner.textContent = 'Connecting to camera…';
+      }
+    })
+    .catch((error) => {
+      console.error('Player error:', error);
+      if (statusBanner) {
+        statusBanner.textContent = 'Video player error – see console for details.';
+      }
+    })
+    .finally(() => {
+      if (statusTimeout) {
+        clearTimeout(statusTimeout);
+      }
+      if (activePlayer && typeof activePlayer.destroy === 'function') {
+        window.addEventListener('beforeunload', () => {
+          activePlayer.destroy();
+        });
+      }
+    });
 }
 
 async function sendPTZCommand(direction, action = 'move') {
