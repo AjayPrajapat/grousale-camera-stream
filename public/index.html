@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grousale/V380 Camera Control</title>
+    <link rel="stylesheet" href="/static/css/styles.css" />
+  </head>
+  <body>
+    <header class="top-bar">
+      <h1>Camera Control Center</h1>
+      <form id="logoutForm" action="/logout" method="post">
+        <button type="submit" class="secondary">Logout</button>
+      </form>
+    </header>
+
+    <main class="layout">
+      <section class="video-panel">
+        <canvas id="cameraCanvas" class="video-player"></canvas>
+        <div class="snapshot-panel">
+          <button id="snapshotButton">Take Snapshot</button>
+          <a id="downloadLink" download="snapshot.jpg" hidden>Download Snapshot</a>
+        </div>
+      </section>
+
+      <section class="controls">
+        <h2>PTZ Controls</h2>
+        <div class="ptz-grid">
+          <button data-direction="up" class="control">▲</button>
+          <button data-direction="zoom-in" class="control">Zoom +</button>
+          <button data-direction="left" class="control">◀</button>
+          <button data-direction="stop" class="control">■</button>
+          <button data-direction="right" class="control">▶</button>
+          <button data-direction="down" class="control">▼</button>
+          <button data-direction="zoom-out" class="control">Zoom -</button>
+        </div>
+
+        <div class="audio-controls">
+          <h3>Audio</h3>
+          <button id="listenButton" class="secondary" disabled>Listen (Coming Soon)</button>
+          <button id="talkButton" class="secondary" disabled>Talk (Coming Soon)</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="/player.js"></script>
+    <script type="module" src="/static/js/app.js"></script>
+  </body>
+</html>
